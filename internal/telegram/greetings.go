@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/telebot.v4"
 	"strconv"
+	"unicode/utf8"
 )
 
 func (t *Telegram) start(c telebot.Context) error {
@@ -16,7 +17,23 @@ func (t *Telegram) start(c telebot.Context) error {
 	account := GetAccount(c)
 
 	// get the display name from user
-	msg, err := t.Input(c, InputConfig{Prompt: welcomeMessage})
+	msg, err := t.Input(c, InputConfig{
+		Prompt: welcomeMessage,
+		Confirm: Confirm{
+			ConfirmText: func(msg *telebot.Message) string {
+				return fmt.Sprintf("So we call you %s. Do you confirm?", msg.Text)
+			},
+		},
+		Validator: Validator{
+			Validator: func(msg *telebot.Message) bool {
+				l := utf8.RuneCountInString(msg.Text)
+				return l > 2 && l < 25
+			},
+			OnInvalid: func(msg *telebot.Message) string {
+				return "❗️Your name length must be at least 3 and maximum 24 characters "
+			},
+		},
+	})
 	if err != nil {
 		return err
 	}

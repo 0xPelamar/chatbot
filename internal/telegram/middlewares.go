@@ -9,7 +9,6 @@ import (
 
 func (t *Telegram) registerMiddleWare(next telebot.HandlerFunc) telebot.HandlerFunc {
 	return func(c telebot.Context) error {
-		logrus.Infoln("here in middleware")
 		acc := entity.Account{
 			ID:        c.Sender().ID,
 			FirstName: c.Sender().FirstName,
