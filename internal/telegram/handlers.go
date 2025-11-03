@@ -5,7 +5,7 @@ import (
 )
 
 func (t *Telegram) setupHandlers() {
-	t.bot.Use()
+	t.bot.Use(t.registerMiddleWare)
 	t.bot.Handle("/start", t.start)
 	t.bot.Handle(telebot.OnText, t.textHandler)
 }

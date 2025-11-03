@@ -1,7 +1,6 @@
 package teleprompt
 
 import (
-	"fmt"
 	"gopkg.in/telebot.v4"
 	"sync"
 	"time"

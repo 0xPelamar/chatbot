@@ -3,11 +3,13 @@ package telegram
 import (
 	"context"
 	"github.com/0xpelamar/chatbot/internal/entity"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/telebot.v4"
 )
 
 func (t *Telegram) registerMiddleWare(next telebot.HandlerFunc) telebot.HandlerFunc {
 	return func(c telebot.Context) error {
+		logrus.Infoln("here in middleware")
 		acc := entity.Account{
 			ID:        c.Sender().ID,
 			FirstName: c.Sender().FirstName,
@@ -17,6 +19,7 @@ func (t *Telegram) registerMiddleWare(next telebot.HandlerFunc) telebot.HandlerF
 		acc, created, err := t.App.Account.CreateOrUpdate(context.Background(), acc)
 		c.Set("account", acc)
 		if err != nil {
+			logrus.WithError(err).Error("failed to register telegram account")
 			return err
 		}
 
