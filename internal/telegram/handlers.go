@@ -3,6 +3,7 @@ package telegram
 import "gopkg.in/telebot.v4"
 
 func (t *Telegram) setupHandlers() {
+	t.bot.Use()
 	t.bot.Handle(telebot.OnText, t.start)
 }
 
