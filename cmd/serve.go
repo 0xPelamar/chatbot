@@ -1,7 +1,13 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/0xpelamar/chatbot/internal/repository"
+	"github.com/0xpelamar/chatbot/internal/repository/redis"
+	"github.com/0xpelamar/chatbot/internal/service"
+	"github.com/0xpelamar/chatbot/internal/telegram"
+	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -14,19 +20,28 @@ var serveCmd = &cobra.Command{
 }
 
 func serve(cmd *cobra.Command, args []string) {
-	fmt.Println("serve called")
+	_ = godotenv.Load()
+
+	// setup repositories
+	redisClient, err := redis.NewRedisClient(os.Getenv("REDIS_URL"))
+	if err != nil {
+		logrus.WithError(err).Fatalln("could not connect to redis server")
+	}
+	accountRepository := repository.NewAccountRedisRepository(redisClient)
+
+	// setup app
+	app := service.NewApp(service.NewAccountService(accountRepository))
+
+	// setup telegram
+
+	tg, err := telegram.NewTelegram(app, os.Getenv("BOT_TOKEN"))
+	if err != nil {
+		logrus.WithError(err).Fatalln("could not create telegram client")
+	}
+	tg.Start()
 }
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
