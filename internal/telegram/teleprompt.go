@@ -29,9 +29,9 @@ getInput:
 	// This part sends a prompt to the user and asks for data
 	if config.Prompt != nil {
 		if config.PromptKeyboard != nil {
-			c.Reply(config.Prompt, generateKeyboard(config.PromptKeyboard))
+			c.Send(config.Prompt, generateKeyboard(config.PromptKeyboard))
 		} else {
-			c.Reply(config.Prompt)
+			c.Send(config.Prompt)
 
 		}
 	}
@@ -39,16 +39,16 @@ getInput:
 	response, timeout := t.TelePrompt.AsMessage(c.Sender().ID, DefaultInputTimeout)
 	if timeout {
 		if config.OnTimeout != nil {
-			c.Reply(config.OnTimeout)
+			c.Send(config.OnTimeout)
 		} else {
-			c.Reply(DefaultInputTimeoutText)
+			c.Send(DefaultInputTimeoutText)
 		}
 		return nil, ErrorInputTimeout
 	}
 
 	// validate
 	if config.Validator.Validator != nil && !config.Validator.Validator(response) {
-		c.Reply(config.Validator.OnInvalid(response))
+		c.Send(config.Validator.OnInvalid(response))
 		goto getInput
 	}
 
@@ -57,7 +57,7 @@ getInput:
 		confirmText := config.Confirm.ConfirmText(response)
 		ConfirmMessage, err := t.Input(c, InputConfig{
 			Prompt:         confirmText,
-			PromptKeyboard: [][]string{{ConfirmText}, {DeclineText}},
+			PromptKeyboard: confirmationKeyboard(),
 			Validator:      choiceValidator(ConfirmText, DeclineText),
 		})
 		if err != nil {

@@ -11,10 +11,10 @@ type Account struct {
 	JoinedAt    time.Time `json:"joined_at"`
 	DisplayName string    `json:"display_name"`
 	Age         int64     `json:"age"`
+	Province    string    `json:"province"`
 	City        string    `json:"city"`
+	Gender      byte      `json:"gender"`
 	Language    int64     `json:"language"`
-
-	State string `json:"state"`
 }
 
 func (a Account) EntityID() ID {
