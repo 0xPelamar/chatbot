@@ -12,7 +12,6 @@ type Account struct {
 	DisplayName string    `json:"display_name"`
 	Age         int64     `json:"age"`
 	Province    string    `json:"province"`
-	City        string    `json:"city"`
 	Gender      byte      `json:"gender"`
 	Language    byte      `json:"language"`
 }
