@@ -1,9 +1,18 @@
 package repository
 
-import "github.com/0xpelamar/chatbot/internal/entity"
+import (
+	"github.com/0xpelamar/chatbot/internal/entity"
+	"github.com/redis/rueidis"
+)
 
-var _ AccountRepository = &Account{}
+var _ AccountRepository = &AccountRedis{}
 
-type Account struct {
-	CommonBehaviour[entity.Account]
+type AccountRedis struct {
+	*RedisCommonBehaviour[entity.Account]
+}
+
+func NewAccountRedis(client rueidis.Client) *AccountRedis {
+	return &AccountRedis{
+		NewRedisCommonBehaviour[entity.Account](client),
+	}
 }
