@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/0xpelamar/chatbot/internal/service"
+	"github.com/0xpelamar/chatbot/internal/telegram/prompt"
 	"github.com/google/uuid"
 	"gopkg.in/telebot.v4"
 )
@@ -15,11 +16,14 @@ import (
 type Telegram struct {
 	App *service.App
 	bot *telebot.Bot
+
+	prompter *prompt.Prompter
 }
 
 func NewTelegram(app *service.App) (*Telegram, error) {
 	t := &Telegram{
-		App: app,
+		App:      app,
+		prompter: prompt.NewPrompter(),
 	}
 	pref := telebot.Settings{
 		Token:   os.Getenv("TELEGRAM_BOT_TOKEN"),
@@ -29,7 +33,7 @@ func NewTelegram(app *service.App) (*Telegram, error) {
 
 	b, err := telebot.NewBot(pref)
 	if err != nil {
-		slog.Error("Error while conecting to the telegram server", "err", err)
+		slog.Error("Error while connecting to the telegram server", "err", err)
 		return nil, err
 	}
 	t.bot = b

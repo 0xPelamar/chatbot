@@ -8,6 +8,7 @@ import (
 	"github.com/0xpelamar/chatbot/internal/consts"
 	"github.com/0xpelamar/chatbot/internal/entity"
 	"github.com/0xpelamar/chatbot/internal/repository"
+	"github.com/google/uuid"
 )
 
 type AccountService struct {
@@ -44,10 +45,15 @@ func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Acco
 	if errors.Is(err, repository.ErrNotFound) {
 		account.JoinedAt = time.Now()
 		account.Language = consts.English
+		account.UUID = uuid.New().String()
 		return account, true, a.repo.Save(ctx, account)
 
 	}
 	return entity.Account{}, false, err
+}
+
+func (a *AccountService) Update(ctx context.Context, account entity.Account) error {
+	return a.repo.Save(ctx, account)
 }
 
 func isChanged(savedAccount, newAccount entity.Account) bool {
