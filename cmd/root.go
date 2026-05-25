@@ -8,8 +8,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "chatbot",
-	Short: "A brief description of your application",
+	Use: "chatbot",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

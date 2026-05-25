@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/0xpelamar/chatbot/internal/db"
 	"github.com/0xpelamar/chatbot/internal/entity"
 	"github.com/0xpelamar/chatbot/internal/repository"
-	"github.com/0xpelamar/chatbot/internal/repository/redis"
 	"github.com/ory/dockertest/v4"
 	"github.com/redis/rueidis"
 	"github.com/stretchr/testify/assert"
@@ -41,11 +41,11 @@ func (s *CommonBehaviourTestSuite) SetupSuite() {
 	redisResource := pool.RunT(s.T(), "redis", dockertest.WithTag("8.4-alpine"))
 	redisPort := redisResource.GetPort("6379/tcp")
 	err := pool.Retry(s.ctx, 30*time.Second, func() error {
-		_, err := redis.NewRedisClient(fmt.Sprintf("127.0.0.1:%s", redisPort))
+		_, err := db.NewRedisClient(fmt.Sprintf("127.0.0.1:%s", redisPort))
 		return err
 	})
 	assert.Nil(s.T(), err)
-	redisClient, err := redis.NewRedisClient(fmt.Sprintf("127.0.0.1:%s", redisPort))
+	redisClient, err := db.NewRedisClient(fmt.Sprintf("127.0.0.1:%s", redisPort))
 	assert.NoError(s.T(), err)
 	s.redisClient = redisClient
 	s.rcb = repository.NewRedisCommonBehaviour[TestType](redisClient)

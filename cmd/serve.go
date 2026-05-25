@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"log/slog"
 	"os"
 
+	"github.com/0xpelamar/chatbot/internal/db"
 	"github.com/0xpelamar/chatbot/internal/repository"
-	"github.com/0xpelamar/chatbot/internal/repository/redis"
 	"github.com/0xpelamar/chatbot/internal/service"
 	"github.com/0xpelamar/chatbot/internal/telegram"
 	"github.com/spf13/cobra"
@@ -21,8 +22,13 @@ var serveCmd = &cobra.Command{
 }
 
 func serve(cmd *cobra.Command, args []string) error {
+	pool, err := db.NewPgPool(context.Background(), os.Getenv("POSTGRES_URL"))
+	if err != nil {
+		return err
+	}
+	_ = pool
 	// setup repositories
-	redisClient, err := redis.NewRedisClient(os.Getenv("REDIS_URL"))
+	redisClient, err := db.NewRedisClient(os.Getenv("REDIS_URL"))
 	if err != nil {
 		slog.Error("could not connect to the redis", "error", err)
 		return err
