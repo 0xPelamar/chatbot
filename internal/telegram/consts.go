@@ -20,6 +20,23 @@ var (
 	TxtDecline                        = "❌ Decline"
 )
 
+var (
+	DefaultInputTimeoutText = "⏰ We were waiting for you but you did not send anything. Please send message when you come ⏰"
+	ConfirmText             = "✅ Confirm"
+	DeclineText             = "❌ Decline"
+	maleGenderKeyboard      = "🙋‍♂️ man"
+	femaleGenderKeyboard    = "🙋‍♀️ woman"
+
+	nonBinaryGenderKeyboard = "🏳️‍🌈 non binary"
+)
+var (
+	selector           = &telebot.ReplyMarkup{}
+	btnEditDisplayName = selector.Data("✏️ Edit Name", "editName")
+	btnEditProvince    = selector.Data("✏️ Edit Province", "editProvince")
+	btnEditAge         = selector.Data("✏️ Edit Age", "editAge")
+	btnEditGender      = selector.Data("✏️ Edit Gender", "editGender")
+)
+
 func getAccount(c telebot.Context) entity.Account {
 	return c.Get("account").(entity.Account)
 }

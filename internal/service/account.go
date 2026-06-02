@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"time"
 
 	"github.com/0xpelamar/chatbot/internal/consts"
@@ -21,6 +22,10 @@ func NewAccountService(repo repository.AccountRepository) *AccountService {
 	}
 }
 
+func (a *AccountService) Get(ctx context.Context, ID entity.ID) (entity.Account, error) {
+	return a.repo.Get(ctx, ID)
+}
+
 func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Account) (entity.Account, bool, error) {
 	savedAccount, err := a.repo.Get(ctx, account.EntityID())
 
@@ -30,14 +35,10 @@ func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Acco
 			savedAccount.FirstName = account.FirstName
 			savedAccount.LastName = account.LastName
 			savedAccount.Username = account.Username
-			savedAccount.DisplayName = account.DisplayName
-			savedAccount.Age = account.Age
-			savedAccount.Province = account.Province
-			savedAccount.Gender = account.Gender
-			savedAccount.Language = account.Language
-
+			slog.Info("User existed and updated")
 			return savedAccount, false, a.repo.Save(ctx, savedAccount)
 		}
+		slog.Info("User existed and not updated")
 		return savedAccount, false, nil
 	}
 
@@ -46,6 +47,7 @@ func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Acco
 		account.JoinedAt = time.Now()
 		account.Language = consts.English
 		account.UUID = uuid.New().String()
+		slog.Info("New account created")
 		return account, true, a.repo.Save(ctx, account)
 
 	}
@@ -59,10 +61,5 @@ func (a *AccountService) Update(ctx context.Context, account entity.Account) err
 func isChanged(savedAccount, newAccount entity.Account) bool {
 	return savedAccount.FirstName != newAccount.FirstName ||
 		savedAccount.LastName != newAccount.LastName ||
-		savedAccount.Username != newAccount.Username ||
-		savedAccount.DisplayName != newAccount.DisplayName ||
-		savedAccount.Age != newAccount.Age ||
-		savedAccount.Gender != newAccount.Gender ||
-		savedAccount.Province != newAccount.Province ||
-		savedAccount.Language != newAccount.Language
+		savedAccount.Username != newAccount.Username
 }

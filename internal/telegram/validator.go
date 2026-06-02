@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"slices"
+	"strconv"
 
 	"gopkg.in/telebot.v4"
 )
@@ -37,6 +38,21 @@ func choiceValidator(choices ...string) Validator {
 		},
 		OnInvalid: func(msg *telebot.Message) string {
 			return "Choose one of the keyboard buttons"
+		},
+	}
+}
+
+func ageValidator() Validator {
+	return Validator{
+		Check: func(msg *telebot.Message) bool {
+			age, err := strconv.Atoi(msg.Text)
+			if err != nil {
+				return false
+			}
+			return age > 11 && age < 78
+		},
+		OnInvalid: func(msg *telebot.Message) string {
+			return "Please enter a valid age as a whole number between 12 and 78."
 		},
 	}
 }

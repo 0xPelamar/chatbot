@@ -11,6 +11,7 @@ type Account struct {
 	JoinedAt    time.Time `json:"joined_at"`
 	DisplayName string    `json:"display_name"`
 	Age         int64     `json:"age"`
+	Country     string    `json:"country"`
 	Province    string    `json:"province"`
 	Gender      byte      `json:"gender"`
 	Language    byte      `json:"language"`

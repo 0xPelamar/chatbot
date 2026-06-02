@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"errors"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -64,7 +65,7 @@ func (w *Prompter) Deliver(userID int64, c telebot.Context) bool {
 // elapses, or a newer prompt for the same user cancels this one.
 func (w *Prompter) WaitForMessage(userID int64, timeout time.Duration) (*telebot.Message, error) {
 	ch := w.subscribe(userID)
-
+	slog.Info("waiting for message", "user", userID)
 	select {
 	case r := <-ch:
 		if r.canceled {

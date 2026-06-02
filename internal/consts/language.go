@@ -7,3 +7,9 @@ const (
 	Arabic
 	Spanish
 )
+
+const (
+	MaleGender byte = iota + 1
+	FemaleGender
+	NonBinaryGender
+)

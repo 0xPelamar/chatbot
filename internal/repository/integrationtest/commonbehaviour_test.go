@@ -38,7 +38,7 @@ type CommonBehaviourTestSuite struct {
 func (s *CommonBehaviourTestSuite) SetupSuite() {
 	s.ctx = context.Background()
 	pool := dockertest.NewPoolT(s.T(), "")
-	redisResource := pool.RunT(s.T(), "redis", dockertest.WithTag("8.4-alpine"))
+	redisResource := pool.RunT(s.T(), "redis/redis-stack-server", dockertest.WithTag("7.4.0-v8"))
 	redisPort := redisResource.GetPort("6379/tcp")
 	err := pool.Retry(s.ctx, 30*time.Second, func() error {
 		_, err := db.NewRedisClient(fmt.Sprintf("127.0.0.1:%s", redisPort))

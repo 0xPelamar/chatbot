@@ -2,7 +2,6 @@ package telegram
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/0xpelamar/chatbot/internal/entity"
 	"gopkg.in/telebot.v4"
@@ -16,13 +15,14 @@ func (t *Telegram) registerMiddleware(next telebot.HandlerFunc) telebot.HandlerF
 			LastName:  c.Sender().LastName,
 			Username:  c.Sender().Username,
 		}
-		acc, created, err := t.App.Accounts.CreateOrUpdate(context.Background(), acc)
+		account, isJustCreated, err := t.App.Accounts.CreateOrUpdate(context.Background(), acc)
 		if err != nil {
-			slog.Error("failed to register telegram account")
 			return err
 		}
-		c.Set("account", acc)
-		c.Set("is_just_created", created)
+		c.Set("is_just_created", isJustCreated)
+		c.Set("account", account)
+
 		return next(c)
+
 	}
 }

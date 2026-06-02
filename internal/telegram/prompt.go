@@ -9,10 +9,10 @@ import (
 	"gopkg.in/telebot.v4"
 )
 
-// ConfirmStep asks the user to confirm their answer before accepting it.
+// confirmStep asks the user to confirm their answer before accepting it.
 // BuildPrompt receives the user's original answer and returns the
 // confirmation question to display.
-type ConfirmStep struct {
+type confirmStep struct {
 	BuildPrompt func(c *telebot.Message) string
 }
 
@@ -26,7 +26,7 @@ type InputConfig struct {
 	OnTimeout      any
 	PromptKeyboard [][]string
 	Validator      Validator
-	Confirm        ConfirmStep
+	confirm        confirmStep
 }
 
 // Input sends an optional prompt, waits for the user's reply, validates
@@ -40,24 +40,20 @@ func (t *Telegram) Input(c telebot.Context, config InputConfig) (*telebot.Messag
 			slog.Error("failed to send prompt", "error", err)
 			return nil, err
 		}
-
 		response, err := t.waitForResponse(c, config)
 		if err != nil {
 			return nil, err
 		}
-
 		if !t.isValid(c, config.Validator, response) {
 			continue
 		}
-
-		confirmed, err := t.confirmResponse(c, config.Confirm, response)
+		confirmed, err := t.confirmResponse(c, config.confirm, response)
 		if err != nil {
 			return nil, err
 		}
 		if !confirmed {
 			continue
 		}
-
 		return response, nil
 	}
 
@@ -80,7 +76,6 @@ func (t *Telegram) waitForResponse(c telebot.Context, config InputConfig) (*tele
 	if err == nil {
 		return response, nil
 	}
-
 	if errors.Is(err, prompt.ErrTimeout) {
 		timeoutMsg := config.OnTimeout
 		if timeoutMsg == nil {
@@ -93,9 +88,9 @@ func (t *Telegram) waitForResponse(c telebot.Context, config InputConfig) (*tele
 	return nil, err
 }
 
-// confirmResponse asks the user to confirm their answer if a ConfirmStep
+// confirmResponse asks the user to confirm their answer if a confirmStep
 // is configured. Returns true if confirmed or no confirmation is needed.
-func (t *Telegram) confirmResponse(c telebot.Context, step ConfirmStep, original *telebot.Message) (bool, error) {
+func (t *Telegram) confirmResponse(c telebot.Context, step confirmStep, original *telebot.Message) (bool, error) {
 	if step.BuildPrompt == nil {
 		return true, nil
 	}
