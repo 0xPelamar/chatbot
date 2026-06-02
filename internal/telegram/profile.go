@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/0xpelamar/chatbot/internal/consts"
 	"gopkg.in/telebot.v4"
 )
 
@@ -20,7 +19,6 @@ func (t *Telegram) editDisplayName(c telebot.Context) error {
 }
 
 func (t *Telegram) editDisplayNamePrompt(c telebot.Context) error {
-	account := getAccount(c)
 	msg, err := t.Input(c, InputConfig{
 		Prompt:         "Please enter your display name.",
 		PromptKeyboard: nil,
@@ -43,6 +41,7 @@ func (t *Telegram) editDisplayNamePrompt(c telebot.Context) error {
 		slog.Error("error while editing display name", "error", err)
 		return err
 	}
+	account := getAccount(c)
 	account.DisplayName = msg.Text
 	slog.Info(fmt.Sprintf("The user entered display name: %s", account.DisplayName))
 	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
@@ -137,13 +136,7 @@ func (t *Telegram) editGenderPrompt(c telebot.Context) error {
 		return err
 	}
 
-	if msg.Text == nonBinaryGenderKeyboard {
-		account.Gender = consts.NonBinaryGender
-	} else if msg.Text == femaleGenderKeyboard {
-		account.Gender = consts.FemaleGender
-	} else {
-		account.Gender = consts.MaleGender
-	}
+	account.Gender = getGenderCode(msg.Text)
 	slog.Info(fmt.Sprintf("The user entered gender: %d", account.Gender))
 	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
 		_ = c.Send(fmt.Sprintf("couldn't update your profile\n"))

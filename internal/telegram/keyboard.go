@@ -45,7 +45,17 @@ func provincesKeyboard() [][]string {
 
 func genderKeyboard() [][]string {
 	return [][]string{
-		{femaleGenderKeyboard, maleGenderKeyboard},
-		{nonBinaryGenderKeyboard},
+		{txtFemale, txtMale},
+		{txtNonBinary},
+	}
+}
+
+func languageKeyboard() [][]string {
+	return [][]string{
+		{txtEnglish},
+		{txtKurdish},
+		{txtPersian},
+		{txtArabic},
+		{txtSpanish},
 	}
 }
