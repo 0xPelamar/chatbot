@@ -15,7 +15,7 @@ func (t *Telegram) registerMiddleware(next telebot.HandlerFunc) telebot.HandlerF
 			LastName:  c.Sender().LastName,
 			Username:  c.Sender().Username,
 		}
-		account, isJustCreated, err := t.App.Accounts.CreateOrUpdate(context.Background(), acc)
+		account, isJustCreated, err := t.App.Account.CreateOrUpdate(context.Background(), acc)
 		if err != nil {
 			return err
 		}

@@ -10,7 +10,7 @@ type Account struct {
 	UUID        string    `json:"uuid"`
 	JoinedAt    time.Time `json:"joined_at"`
 	DisplayName string    `json:"display_name"`
-	Age         int64     `json:"age"`
+	Age         uint8     `json:"age"`
 	Country     string    `json:"country"`
 	Province    string    `json:"province"`
 	Gender      byte      `json:"gender"`

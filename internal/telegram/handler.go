@@ -53,7 +53,7 @@ func (t *Telegram) editLanguage(c telebot.Context) error {
 	account := getAccount(c)
 	account.Language = getLanguageCode(msg.Text)
 	slog.Info(fmt.Sprintf("The user entered language: %d", account.Language))
-	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
+	if err := t.App.Account.Update(context.Background(), account); err != nil {
 		_ = c.Send(fmt.Sprintln("Couldn't update the langauge"))
 		return err
 	}

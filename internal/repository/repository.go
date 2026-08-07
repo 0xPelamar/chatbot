@@ -17,6 +17,11 @@ type CommonBehaviour[T entity.Entity] interface {
 	Mget(ctx context.Context, IDs ...entity.ID) ([]T, error)
 }
 
-type AccountRepository interface {
+type Account interface {
 	CommonBehaviour[entity.Account]
+}
+
+type Chat interface {
+	CommonBehaviour[entity.Chat]
+	ChatUsers(ctx context.Context, ID entity.ID) ([]entity.Account, error)
 }

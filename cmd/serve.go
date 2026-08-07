@@ -34,11 +34,14 @@ func serve(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	slog.Info("Connected to the redis successfully.")
+
 	accRepo := repository.NewAccountRedis(redisClient)
+	chatRepo := repository.NewChatRedis(redisClient)
 
 	accService := service.NewAccountService(accRepo)
+	chatService := service.NewChatService(chatRepo)
 
-	app := service.NewApp(accService)
+	app := service.NewApp(accService, chatService)
 
 	tel, err := telegram.NewTelegram(app)
 	if err != nil {

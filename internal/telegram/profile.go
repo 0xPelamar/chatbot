@@ -44,7 +44,7 @@ func (t *Telegram) editDisplayNamePrompt(c telebot.Context) error {
 	account := getAccount(c)
 	account.DisplayName = msg.Text
 	slog.Info(fmt.Sprintf("The user entered display name: %s", account.DisplayName))
-	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
+	if err := t.App.Account.Update(context.Background(), account); err != nil {
 		_ = c.Send(fmt.Sprintf("couldn't update your profile\n"))
 		return err
 	}
@@ -75,7 +75,7 @@ func (t *Telegram) editAgePrompt(c telebot.Context) error {
 	newAge, _ := strconv.Atoi(msg.Text)
 	account.Age = int64(newAge)
 	slog.Info(fmt.Sprintf("The user entered age: %d", account.Age))
-	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
+	if err := t.App.Account.Update(context.Background(), account); err != nil {
 		_ = c.Send(fmt.Sprintf("couldn't update your profile\n"))
 		return err
 	}
@@ -106,7 +106,7 @@ func (t *Telegram) editProvincePrompt(c telebot.Context) error {
 	}
 	account.Province = msg.Text
 	slog.Info(fmt.Sprintf("The user entered province: %s", account.Province))
-	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
+	if err := t.App.Account.Update(context.Background(), account); err != nil {
 		_ = c.Send(fmt.Sprintf("couldn't update your profile\n"))
 		return err
 	}
@@ -138,7 +138,7 @@ func (t *Telegram) editGenderPrompt(c telebot.Context) error {
 
 	account.Gender = getGenderCode(msg.Text)
 	slog.Info(fmt.Sprintf("The user entered gender: %d", account.Gender))
-	if err := t.App.Accounts.Update(context.Background(), account); err != nil {
+	if err := t.App.Account.Update(context.Background(), account); err != nil {
 		_ = c.Send(fmt.Sprintf("couldn't update your profile\n"))
 		return err
 	}

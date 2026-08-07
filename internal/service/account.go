@@ -12,22 +12,22 @@ import (
 	"github.com/google/uuid"
 )
 
-type AccountService struct {
-	repo repository.AccountRepository
+type Account struct {
+	repository.Account
 }
 
-func NewAccountService(repo repository.AccountRepository) *AccountService {
-	return &AccountService{
-		repo: repo,
+func NewAccountService(accounts repository.Account) *Account {
+	return &Account{
+		Account: accounts,
 	}
 }
 
-func (a *AccountService) Get(ctx context.Context, ID entity.ID) (entity.Account, error) {
-	return a.repo.Get(ctx, ID)
+func (a *Account) Get(ctx context.Context, ID entity.ID) (entity.Account, error) {
+	return a.Get(ctx, ID)
 }
 
-func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Account) (entity.Account, bool, error) {
-	savedAccount, err := a.repo.Get(ctx, account.EntityID())
+func (a *Account) CreateOrUpdate(ctx context.Context, account entity.Account) (entity.Account, bool, error) {
+	savedAccount, err := a.Get(ctx, account.EntityID())
 
 	// User exists
 	if err == nil {
@@ -36,7 +36,7 @@ func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Acco
 			savedAccount.LastName = account.LastName
 			savedAccount.Username = account.Username
 			slog.Info("User existed and updated")
-			return savedAccount, false, a.repo.Save(ctx, savedAccount)
+			return savedAccount, false, a.Save(ctx, savedAccount)
 		}
 		slog.Info("User existed and not updated")
 		return savedAccount, false, nil
@@ -48,14 +48,14 @@ func (a *AccountService) CreateOrUpdate(ctx context.Context, account entity.Acco
 		account.Language = consts.English
 		account.UUID = uuid.New().String()
 		slog.Info("New account created")
-		return account, true, a.repo.Save(ctx, account)
+		return account, true, a.Save(ctx, account)
 
 	}
 	return entity.Account{}, false, err
 }
 
-func (a *AccountService) Update(ctx context.Context, account entity.Account) error {
-	return a.repo.Save(ctx, account)
+func (a *Account) Update(ctx context.Context, account entity.Account) error {
+	return a.Save(ctx, account)
 }
 
 func isChanged(savedAccount, newAccount entity.Account) bool {
